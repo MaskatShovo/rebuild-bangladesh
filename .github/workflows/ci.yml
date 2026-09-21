@@ -1,0 +1,30 @@
+name: Verify ReBuild
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: rebuild
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: rebuild_test
+        ports: [5432:5432]
+        options: --health-cmd "pg_isready -U rebuild" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://rebuild:ci-only-password@localhost:5432/rebuild_test
+      BETTER_AUTH_SECRET: ci-only-auth-secret-at-least-thirty-two-characters
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

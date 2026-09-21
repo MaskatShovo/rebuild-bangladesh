@@ -1,0 +1,77 @@
+name: rebuild-bangladesh
+services:
+  postgres:
+    image: postgres:18.4-bookworm
+    environment:
+      POSTGRES_USER: rebuild
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (same password as DATABASE_URL)}
+      POSTGRES_DB: rebuild
+      POSTGRES_INITDB_ARGS: --encoding=UTF8 --locale=C
+    ports: ["127.0.0.1:54329:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rebuild -d rebuild"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z.hotfix.7aa24e772
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+    ports: ["127.0.0.1:9000:9000", "127.0.0.1:9001:9001"]
+    volumes: ["minio-data:/data"]
+  storage-init:
+    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
+    depends_on: [minio]
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET:-rebuild}
+    entrypoint: /bin/sh
+    command:
+      [
+        "-c",
+        "until mc alias set local http://minio:9000 $$S3_ACCESS_KEY $$S3_SECRET_KEY; do sleep 2; done; mc mb --ignore-existing local/$$S3_BUCKET",
+      ]
+  mailpit:
+    image: axllent/mailpit:v1.27.8
+    ports: ["127.0.0.1:1025:1025", "127.0.0.1:8025:8025"]
+    volumes: ["mail-data:/data"]
+    environment:
+      MP_DATABASE: /data/mailpit.db
+  app:
+    profiles: [full]
+    build: .
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DEMO_MODE: "false"
+      PAYMENT_SIMULATOR: "false"
+      DATABASE_URL: postgresql://rebuild:${POSTGRES_PASSWORD}@postgres:5432/rebuild
+      S3_ENDPOINT: http://minio:9000
+      SMTP_HOST: mailpit
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      storage-init: { condition: service_completed_successfully }
+  worker:
+    profiles: [full]
+    build: .
+    command: ["node", "node_modules/tsx/dist/cli.mjs", "scripts/worker.ts"]
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DEMO_MODE: "false"
+      PAYMENT_SIMULATOR: "false"
+      DATABASE_URL: postgresql://rebuild:${POSTGRES_PASSWORD}@postgres:5432/rebuild
+      S3_ENDPOINT: http://minio:9000
+      SMTP_HOST: mailpit
+    depends_on:
+      postgres: { condition: service_healthy }
+      storage-init: { condition: service_completed_successfully }
+volumes:
+  postgres-data:
+  minio-data:
+  mail-data:

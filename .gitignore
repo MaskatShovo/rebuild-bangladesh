@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.env
+.env.*.local
+.local/
+src/generated/
+test-results/
+playwright-report/
+coverage/
+*.tsbuildinfo
+output/
+tmp/
+WhatsApp*

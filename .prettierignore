@@ -1,0 +1,12 @@
+node_modules
+.next
+.local
+src/generated
+package-lock.json
+output
+tmp
+test-results
+docs/screenshots
+docs/performance
+playwright-report
+public/materials

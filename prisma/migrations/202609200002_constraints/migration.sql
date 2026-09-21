@@ -1,0 +1,13 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX "Listing_search_trgm" ON "Listing" USING gin ("searchText" gin_trgm_ops);
+ALTER TABLE "InventoryLot" ADD CONSTRAINT inventory_nonnegative CHECK (total >= 0 AND reserved >= 0 AND sold >= 0 AND reserved + sold <= total);
+ALTER TABLE "Listing" ADD CONSTRAINT listing_price_quantity CHECK (price > 0 AND minimum > 0 AND increment > 0 AND minimum % increment = 0);
+ALTER TABLE "Listing" ADD CONSTRAINT listing_state CHECK (status IN ('DRAFT','PENDING','APPROVED','REJECTED','PAUSED','ARCHIVED'));
+ALTER TABLE "Order" ADD CONSTRAINT order_positive CHECK (quantity > 0 AND "unitPrice" > 0 AND "totalPrice" = quantity::bigint * "unitPrice");
+ALTER TABLE "Order" ADD CONSTRAINT no_self_purchase CHECK ("buyerId" <> "sellerId");
+ALTER TABLE "Order" ADD CONSTRAINT order_state CHECK (status IN ('PENDING','ACCEPTED','READY','COMPLETED','DECLINED','CANCELLED','EXPIRED'));
+ALTER TABLE "Reservation" ADD CONSTRAINT reservation_positive CHECK (quantity > 0 AND state IN ('HELD','RELEASED','EXPIRED','CONSUMED'));
+ALTER TABLE "Review" ADD CONSTRAINT review_rating CHECK (rating BETWEEN 1 AND 5);
+ALTER TABLE "User" ADD CONSTRAINT user_role CHECK (role IN ('MEMBER','MODERATOR','ADMIN'));
+ALTER TABLE "PaymentAttempt" ADD CONSTRAINT payment_positive CHECK (amount > 0 AND currency = 'BDT');
+CREATE UNIQUE INDEX one_pending_request_per_buyer ON "Order" ("buyerId", "listingId") WHERE status = 'PENDING';

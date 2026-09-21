@@ -1,0 +1,12 @@
+node_modules
+.next
+.local
+.env
+.env.*.local
+.git
+output
+tmp
+WhatsApp*
+test-results
+playwright-report
+docs/screenshots
