@@ -2,6 +2,8 @@
 
 This is a working local business foundation, not a production-readiness certification.
 
+Update, 8 October 2026: the user authorized and received a [public browsing demo](https://rebuild-bangladesh-one.vercel.app) on Vercel with hosted PostgreSQL and private Blob storage. It is separate from local data; accounts/trading remain disabled pending email setup. [Hosted configuration and checks](hosted-demo.md) supersede earlier statements that no external demo deployment had occurred. The remaining commerce launch requirements still apply.
+
 ## Implemented
 
 - PostgreSQL migrations, structured category attributes, integer paisa/counts, constraints and transactional inventory locks.

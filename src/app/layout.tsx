@@ -9,6 +9,9 @@ import "./globals.css";
 import { Header, Footer, LocaleProvider } from "@/components/ui";
 import { currentUser } from "@/lib/auth";
 export const metadata: Metadata = {
+  ...(process.env.DEMO_MODE === "true"
+    ? { robots: { index: false, follow: false } }
+    : {}),
   metadataBase: new URL(process.env.BETTER_AUTH_URL || "http://localhost:3000"),
   title: {
     default: "ReBuild Bangladesh — A new beginning for leftover materials",
@@ -48,7 +51,9 @@ export default async function RootLayout({
             <div className="demo-banner">
               {locale === "bn"
                 ? "ডেমো বাজার · কাল্পনিক বিজ্ঞাপন ও বিক্রেতা"
-                : "Demo marketplace · Fictional listings and sellers"}
+                : process.env.ACCOUNTS_ENABLED === "false"
+                  ? "Browsing demo · Fictional listings · Accounts and trading are not enabled"
+                  : "Demo marketplace · Fictional listings and sellers"}
             </div>
           )}
           <main id="main">{children}</main>

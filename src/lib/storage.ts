@@ -5,6 +5,7 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import sharp from "sharp";
+import { put, get, del } from "@vercel/blob";
 import { db } from "./db";
 import { assert } from "./errors";
 export const storage = new S3Client({
@@ -17,13 +18,36 @@ export const storage = new S3Client({
   },
 });
 const Bucket = process.env.S3_BUCKET || "rebuild";
+const usesBlobStorage = () => process.env.STORAGE_DRIVER === "vercel-blob";
+async function writeObject(key: string, body: Buffer) {
+  if (usesBlobStorage()) {
+    await put(key, body, {
+      access: "private",
+      addRandomSuffix: false,
+      contentType: "image/webp",
+    });
+  } else {
+    await storage.send(
+      new PutObjectCommand({
+        Bucket,
+        Key: key,
+        Body: body,
+        ContentType: "image/webp",
+      }),
+    );
+  }
+}
+async function removeObject(key: string) {
+  if (usesBlobStorage()) await del(key);
+  else await storage.send(new DeleteObjectCommand({ Bucket, Key: key }));
+}
 export async function putImage(
   ownerId: string,
   bytes: Buffer,
   alt: string,
   listingId?: string,
 ) {
-  assert(bytes.length > 0 && bytes.length <= 8 * 1024 * 1024, "UPLOAD", 413);
+  assert(bytes.length > 0 && bytes.length <= 4 * 1024 * 1024, "UPLOAD", 413);
   const image = sharp(bytes, { limitInputPixels: 30_000_000, animated: false });
   let meta;
   try {
@@ -46,22 +70,8 @@ export async function putImage(
     .resize(640, 480, { fit: "cover" })
     .webp({ quality: 78 })
     .toBuffer();
-  await storage.send(
-    new PutObjectCommand({
-      Bucket,
-      Key: objectKey,
-      Body: full,
-      ContentType: "image/webp",
-    }),
-  );
-  await storage.send(
-    new PutObjectCommand({
-      Bucket,
-      Key: thumbnailKey,
-      Body: thumb,
-      ContentType: "image/webp",
-    }),
-  );
+  await writeObject(objectKey, full);
+  await writeObject(thumbnailKey, thumb);
   return db.upload.create({
     data: {
       ownerId,
@@ -73,6 +83,11 @@ export async function putImage(
   });
 }
 export async function imageBytes(key: string) {
+  if (usesBlobStorage()) {
+    const object = await get(key, { access: "private" });
+    assert(object && object.statusCode === 200, "NOT_FOUND", 404);
+    return new Uint8Array(await new Response(object.stream).arrayBuffer());
+  }
   const object = await storage.send(new GetObjectCommand({ Bucket, Key: key }));
   return object.Body!.transformToByteArray();
 }
@@ -85,10 +100,8 @@ export async function cleanupUploads() {
     take: 100,
   });
   for (const u of uploads) {
-    await storage.send(new DeleteObjectCommand({ Bucket, Key: u.objectKey }));
-    await storage.send(
-      new DeleteObjectCommand({ Bucket, Key: u.thumbnailKey }),
-    );
+    await removeObject(u.objectKey);
+    await removeObject(u.thumbnailKey);
     await db.upload.delete({ where: { id: u.id } });
   }
 }

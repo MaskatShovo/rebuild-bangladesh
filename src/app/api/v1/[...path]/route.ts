@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { dispatchJobs } from "@/lib/dispatch-jobs";
 import { z, ZodError } from "zod";
 import { db } from "@/lib/db";
 import { currentUser, requireUser, requireRole } from "@/lib/auth";
@@ -272,14 +273,14 @@ async function handle(req: NextRequest, context: Context) {
     }
     if (resource === "uploads" && method === "POST") {
       assert(
-        Number(req.headers.get("content-length") || 0) <= 9 * 1024 * 1024,
+        Number(req.headers.get("content-length") || 0) <= 4.25 * 1024 * 1024,
         "UPLOAD",
         413,
       );
       const form = await req.formData(),
         file = form.get("file");
       assert(
-        file instanceof File && file.size <= 8 * 1024 * 1024,
+        file instanceof File && file.size <= 4 * 1024 * 1024,
         "UPLOAD",
         413,
       );
@@ -756,8 +757,14 @@ async function handle(req: NextRequest, context: Context) {
     );
   }
 }
+export const maxDuration = 60;
+async function mutation(req: NextRequest, context: Context) {
+  const response = await handle(req, context);
+  if (response.ok) dispatchJobs();
+  return response;
+}
 export const GET = handle,
-  POST = handle,
-  PUT = handle,
-  PATCH = handle,
-  DELETE = handle;
+  POST = mutation,
+  PUT = mutation,
+  PATCH = mutation,
+  DELETE = mutation;

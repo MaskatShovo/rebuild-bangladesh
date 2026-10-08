@@ -1,5 +1,7 @@
 # Implementation handover — 21 September 2026
 
+**Hosting update, 8 October 2026:** A public browsing demo is now deployed at https://rebuild-bangladesh-one.vercel.app, using a separate hosted database and private images. Accounts/trading remain disabled by the user's choice until email setup. Live desktop/mobile/search/compare/coverage/Bangla checks passed. See [hosted-demo.md](hosted-demo.md). The original local verification record below is retained as dated history.
+
 The local implementation and verification pass are finished. This does not mean every launch requirement is complete: [launch-readiness.md](launch-readiness.md) lists the exact external dependencies and deferred work.
 
 ## Working now

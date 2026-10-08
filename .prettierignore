@@ -10,3 +10,5 @@ docs/screenshots
 docs/performance
 playwright-report
 public/materials
+.agents
+skills-lock.json

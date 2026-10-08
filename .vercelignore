@@ -1,0 +1,14 @@
+.env*
+.local
+output
+tmp
+WhatsApp*
+docs
+test-results
+playwright-report
+node_modules
+.next
+.git
+tests
+.agents
+skills-lock.json

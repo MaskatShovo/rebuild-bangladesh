@@ -354,8 +354,8 @@ export function ListingForm({
         </h2>
         <p className="hint">
           <T
-            en="Up to 8 JPEG, PNG or WebP images, under 8 MB each. Include labels, batch codes and any damage."
-            bn="সর্বোচ্চ ৮টি JPEG, PNG বা WebP ছবি, প্রতিটি ৮ মেগাবাইটের কম। লেবেল, ব্যাচ কোড ও ক্ষতির ছবি দিন।"
+            en="Up to 8 JPEG, PNG or WebP images, under 4 MB each. Include labels, batch codes and any damage."
+            bn="সর্বোচ্চ ৮টি JPEG, PNG বা WebP ছবি, প্রতিটি ৪ মেগাবাইটের কম। লেবেল, ব্যাচ কোড ও ক্ষতির ছবি দিন।"
           />
         </p>
         <div className="file-list">
@@ -390,6 +390,12 @@ export function ListingForm({
               if (!file) return;
               setBusy(true);
               try {
+                if (file.size > 4 * 1024 * 1024)
+                  throw new Error(
+                    locale === "bn"
+                      ? "ছবিটি ৪ মেগাবাইটের কম হতে হবে।"
+                      : "Choose a photo under 4 MB.",
+                  );
                 const form = new FormData();
                 form.set("file", file);
                 form.set("alt", String(fields.title || "Material photograph"));

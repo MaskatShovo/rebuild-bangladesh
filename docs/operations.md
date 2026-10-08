@@ -1,5 +1,7 @@
 # Operations and deployment
 
+The public browsing deployment from 8 October 2026 uses Vercel, Neon and private Vercel Blob; see [hosted-demo.md](hosted-demo.md). The container route and original local operational record below remain available for a complete commerce deployment. SMTP/account activation, Docker smoke testing and restore drills remain outstanding.
+
 ## Local topology
 
 The tested topology is one Next.js Node process on port 3000, one worker, real PostgreSQL 18.4 on 54329, local S3-compatible storage on 9000, SMTP on 1025 and inbox on 8025. Every fallback service binds to loopback. The fallback database directory and objects persist under `.local/`. Keep those ignored and never serve them as static assets. Fallback SMTP raw mail is also stored in `.local/mail.jsonl` and contains recovery links: treat it as sensitive.

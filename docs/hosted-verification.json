@@ -1,0 +1,13 @@
+{
+  "base": "https://rebuild-bangladesh-one.vercel.app",
+  "desktop": true,
+  "images": true,
+  "search": true,
+  "compare": true,
+  "coverage": true,
+  "accountNotice": true,
+  "signupDisabled": true,
+  "mobile": true,
+  "bangla": true,
+  "pageErrors": []
+}

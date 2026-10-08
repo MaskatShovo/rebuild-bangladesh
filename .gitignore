@@ -11,3 +11,11 @@ coverage/
 output/
 tmp/
 WhatsApp*
+
+.vercel
+.env*
+!.env.example
+.agents/
+skills-lock.json
+
+.env*

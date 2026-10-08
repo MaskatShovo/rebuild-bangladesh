@@ -2,7 +2,7 @@
 
 A local-first marketplace for usable renovation leftovers in Dhaka. This implementation includes a real PostgreSQL database, authenticated REST API, responsive Next.js storefront, seller/moderator dashboards, private messages, wanted materials, and a complete pay-on-pickup order workflow.
 
-**This is a business foundation and local demonstration, not a claim of production readiness.** All seeded sellers/listings are fictional. Material photographs are illustrative stock images. No external deployment or live payment has been performed.
+**This is a business foundation and demonstration, not a claim of readiness for live commerce.** All seeded sellers/listings are fictional. Material photographs are illustrative stock images. A public browsing demo is hosted at **https://rebuild-bangladesh-one.vercel.app**; accounts/trading are disabled there until email setup. Local development retains the complete buyer/seller workflows. No live payment has been performed.
 
 ## Quick start (no Docker required)
 
@@ -100,5 +100,7 @@ Playwright requires the app, seed, local storage, SMTP and worker to be running.
 | Recruiter case study and demo                   | `docs/case-study.md`, `docs/demo-script.md`   |
 
 Production deployment uses the Node container, PostgreSQL, S3-compatible storage, SMTP and a separate worker, behind HTTPS. Follow `docs/operations.md`; a frontend preview is not a full deployment.
+
+The hosted browsing demo uses Vercel, Neon PostgreSQL and private Vercel Blob. See [hosted-demo.md](docs/hosted-demo.md) for its configuration, verification and limits. Uploads now have a 4 MB limit to fit Vercel's request limit.
 
 **Next business validation:** observe five Dhaka renovation homeowners and five small contractors attempting to match real leftover tile batches and arrange pickup. Measure how often a usable specification/quantity/location match actually happens before investing in online material payments or transport integrations.

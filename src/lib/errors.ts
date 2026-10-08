@@ -55,8 +55,8 @@ const messages: Record<string, [string, string]> = {
     "অনেক অনুরোধ হয়েছে। কিছুক্ষণ পরে চেষ্টা করুন।",
   ],
   UPLOAD: [
-    "Upload a decodable JPEG, PNG or WebP image under 8 MB.",
-    "৮ মেগাবাইটের কম JPEG, PNG বা WebP ছবি দিন।",
+    "Upload a decodable JPEG, PNG or WebP image under 4 MB.",
+    "৪ মেগাবাইটের কম JPEG, PNG বা WebP ছবি দিন।",
   ],
   IMAGES_REQUIRED: [
     "Add at least one image before publishing.",
