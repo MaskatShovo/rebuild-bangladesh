@@ -1,12 +1,12 @@
 {
   "base": "https://rebuild-bangladesh-one.vercel.app",
+  "checkedAt": "2026-10-08T07:45:09.212Z",
   "desktop": true,
   "images": true,
   "search": true,
   "compare": true,
   "coverage": true,
-  "accountNotice": true,
-  "signupDisabled": true,
+  "accountsEnabled": true,
   "mobile": true,
   "bangla": true,
   "pageErrors": []

@@ -1,6 +1,6 @@
 # Operations and deployment
 
-The public browsing deployment from 8 October 2026 uses Vercel, Neon and private Vercel Blob; see [hosted-demo.md](hosted-demo.md). The container route and original local operational record below remain available for a complete commerce deployment. SMTP/account activation, Docker smoke testing and restore drills remain outstanding.
+The public deployment from 8 October 2026 uses Vercel, Neon, private Vercel Blob and Gmail SMTP, with account registration enabled; see [hosted-demo.md](hosted-demo.md). Hosted verification and password-reset flows passed browser checks. Owner moderator setup, Docker smoke testing and restore drills remain outstanding. The container route and original local operational record below remain available for a complete commerce deployment.
 
 ## Local topology
 

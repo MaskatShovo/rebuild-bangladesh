@@ -1,0 +1,14 @@
+{
+  "base": "https://rebuild-bangladesh-one.vercel.app",
+  "checkedAt": "2026-10-08T07:43:48.718Z",
+  "registration": true,
+  "verificationRequired": true,
+  "verificationEmailSent": true,
+  "verificationAndSignIn": true,
+  "resetEmailSent": true,
+  "resetRevokesSessions": true,
+  "oldPasswordRejected": true,
+  "resetAndNewPasswordSignIn": true,
+  "pageErrors": [],
+  "testAccountRemoved": true
+}

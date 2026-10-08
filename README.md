@@ -2,7 +2,7 @@
 
 A local-first marketplace for usable renovation leftovers in Dhaka. This implementation includes a real PostgreSQL database, authenticated REST API, responsive Next.js storefront, seller/moderator dashboards, private messages, wanted materials, and a complete pay-on-pickup order workflow.
 
-**This is a business foundation and demonstration, not a claim of readiness for live commerce.** All seeded sellers/listings are fictional. Material photographs are illustrative stock images. A public browsing demo is hosted at **https://rebuild-bangladesh-one.vercel.app**; accounts/trading are disabled there until email setup. Local development retains the complete buyer/seller workflows. No live payment has been performed.
+**This is a business foundation and demonstration, not a claim of readiness for live commerce.** All seeded sellers/listings are fictional. Material photographs are illustrative stock images. The public demo is hosted at **https://rebuild-bangladesh-one.vercel.app**, with Gmail verification/reset delivery and account registration enabled. New listings require moderator approval; seeded seller accounts cannot sign in to production. No live payment has been performed.
 
 ## Quick start (no Docker required)
 
